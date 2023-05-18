@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов (простой)»
 
 * Студент: [Irina Styazhkina](https://up.htmlacademy.ru/nodejs-api/4/user/2135145).
-* Наставник: `Неизвестно`.
+* Наставник: [Глеб Клецков](https://htmlacademy.ru/profile/id1487865).
 
 ---
 
