@@ -1,0 +1,57 @@
+{
+  "api": {
+    "titles": [
+      "Amazing and Extremely Central Flat",
+      "Nice, cozy, warm big bed apartment"
+    ],
+    "descriptions": [
+      "Discover daily local life in city center, friendly neighborhood, clandestine casino, karaoke, old-style artisans, art gallery and artist studio downstairs.",
+      "A new spacious villa, one floor. All commodities, jacuzzi and beautiful scenery. Ideal for families or friends."
+    ],
+    "images": [
+      "https://12.react.pages.academy/static/hotel/1.jpg",
+      "https://12.react.pages.academy/static/hotel/2.jpg",
+      "https://12.react.pages.academy/static/hotel/3.jpg",
+      "https://12.react.pages.academy/static/hotel/4.jpg",
+      "https://12.react.pages.academy/static/hotel/5.jpg",
+      "https://12.react.pages.academy/static/hotel/6.jpg",
+      "https://12.react.pages.academy/static/hotel/7.jpg",
+      "https://12.react.pages.academy/static/hotel/8.jpg",
+      "https://12.react.pages.academy/static/hotel/9.jpg",
+      "https://12.react.pages.academy/static/hotel/10.jpg"
+    ],
+    "goods": [
+      "Fridge",
+      "Air conditioning",
+      "Parking",
+      "Breakfast",
+      "Free wi-fi",
+      "TV"
+    ],
+    "users": [
+      "Ivanov Ivan",
+      "Petrov Petr",
+      "Anina Anna",
+      "Vladimirov Vladimir",
+      "Alexeev Alexey",
+      "Dmitriev Dmitry"
+    ],
+    "emails": [
+      "vanya@ya.ru",
+      "petrov_petr@gmail.com",
+      "anna@mail.ru",
+      "alexxev@gmail.com",
+      "vl_vladimirov@ya.ru",
+      "dmitriviev@mail.com"
+    ],
+    "avatars": [
+      "img/avatar-angelina.jpg",
+      "img/user.jpg",
+      "img/photo.jpg",
+      "img/awesome-avatar.jpg",
+      "img/roland.jpg",
+      "img/smite.jpg",
+      "img/coffee.jpg"
+    ]
+  }
+}
