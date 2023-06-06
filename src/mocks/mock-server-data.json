@@ -23,18 +23,19 @@
     "goods": [
       "Fridge",
       "Air conditioning",
-      "Parking",
+      "Laptop friendly workspace",
       "Breakfast",
-      "Free wi-fi",
-      "TV"
+      "Baby seat",
+      "Towels",
+      "Washer"
     ],
     "users": [
-      "Ivanov Ivan",
-      "Petrov Petr",
-      "Anina Anna",
-      "Vladimirov Vladimir",
-      "Alexeev Alexey",
-      "Dmitriev Dmitry"
+      "Ivan",
+      "Petr",
+      "Anna",
+      "Vladimir",
+      "Alexey",
+      "Dmitry"
     ],
     "emails": [
       "vanya@ya.ru",

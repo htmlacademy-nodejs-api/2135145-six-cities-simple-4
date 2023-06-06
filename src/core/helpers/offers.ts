@@ -40,7 +40,7 @@ export function createOffer(offerData: string): Offer {
     rooms: Number(rooms),
     guests: Number(guests),
     price: Number(price),
-    goods: Array.from(goods.split(';')),
+    goods: Array.from(goods.split(',')),
     host: {
       name,
       email,

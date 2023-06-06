@@ -1,4 +1,5 @@
 import { City } from './city.type.js';
+import { Good } from './good.type.js';
 import { HouseType } from './house-type.type.js';
 import { Location } from './location.type.js';
 import { User } from './user.type.js';
@@ -16,7 +17,7 @@ export type Offer = {
   rooms: number,
   guests: number,
   price: number,
-  goods: string[],
+  goods: Good[],
   host: User,
   comments?: number,
   location: Location,
