@@ -1,0 +1,705 @@
+openapi: 3.0.0
+info:
+  title: API сервер для проекта Six cities
+  description: |-
+    * Список ресурсов и маршрутов сервера Six cities
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+tags:
+  - name: users
+    description: Действия с пользователями
+  - name: offers
+    description: Действия с предложениями по аренде
+  - name: comments
+    description: Действия с комментариями
+  - name: cities
+    description: Действия с городами
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя
+      requestBody:
+        description: Данные для создания нового пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/basicUser'
+        required: true
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "400":
+          description: Данные не прошли валидацию. Пользователь не зарегистрирован
+        "409":
+          description: Пользователь с таким email уже существует
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основа логина и пароля
+      requestBody:
+        description: Данные для авторизации
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/authorize'
+        required: true
+      responses:
+        "200":
+          description: Пользователь авторизован. Токен пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/token'
+        "401":
+          description: Пользователь не авторизован. Неверные данные для авторизации
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Проверяет, авторизован ли пользователь на основании токена,и если авторизован - возращает информацию о пользователе
+      security:
+        - auth: []
+      parameters:
+        - name: x-token
+          in: header
+          description: Токен пользователя
+          required: true
+          schema:
+            $ref: '#/components/schemas/token'
+      responses:
+        "200":
+          description: Пользователь авторизован. Данные пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "401":
+           description: Пользователь не авторизован
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      security:
+        - auth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID пользователя, которому необходимо обновит аватар
+          schema:
+            type: string
+        - name: x-token
+          in: header
+          description: Токен пользователя
+          required: true
+          schema:
+            $ref: '#/components/schemas/token'
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя.
+      requestBody:
+        description: Изображение аватара в формате `png` или `jpg`.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/avatar'
+        required: true
+      responses:
+        "200":
+          description: Аватар успешно изменен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avatar'
+        "400":
+          description: Данные не прошли валидацию. Аватар не изменен
+        "401":
+          description: Пользователь не авторизован
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /cities:
+    get:
+      tags:
+        - cities
+      summary: Получить список доступных городов
+      description: Список городов, доступных в приложении
+      responses:
+        "200":
+          description: Список городов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/city'
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /comments/{offerId}:
+    get:
+      tags:
+        - comments
+      summary: Получить список комментариев для предложения
+      description: Список последних 50 (или менее) комментариев пользователей к предложению
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предожения, к которому необходимо получить комментарии
+          schema:
+            type: string
+            example: "hjb112546513dc"
+      responses:
+        "200":
+          description: Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+        "400":
+          description: Невалидный offerId
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    post:
+      tags:
+        - comments
+      summary: Создать новый комментарий
+      description: Добавить к предложению новый комментарий
+      security:
+        - auth: []
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предложения, к которому необходимо добавить комментарий
+          schema:
+              type: string
+        - name: x-token
+          in: header
+          description: Токен пользователя
+          required: true
+          schema:
+            $ref: '#/components/schemas/token'
+      requestBody:
+        description: Данные нового комментария
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newComment'
+        required: true
+      responses:
+        "201":
+          description: Созданный комментарий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+        "400":
+          description: Данные не прошли валидацию
+        "401":
+          description: Пользователь не авторизован
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /offers:
+    post:
+      tags:
+        - offers
+      summary: Создание нового предложения
+      description: Создать новое предложение
+      security:
+        - auth: []
+      parameters:
+        - name: x-token
+          in: header
+          description: Токен пользователя
+          required: true
+          schema:
+            $ref: '#/components/schemas/token'
+      requestBody:
+        description: Данные нового предложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newOffer'
+        required: true
+      responses:
+        "201":
+          description: Предложение создано. Объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+        "400":
+          description: Данные не прошли валидацию
+        "401":
+          description: Пользователь не авторизован
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+    put:
+      tags:
+        - offers
+      summary: Редактирование предложения
+      description: Обновить существующее предложение
+      security:
+        - auth: []
+      parameters:
+        - name: x-token
+          in: header
+          description: Токен пользователя
+          required: true
+          schema:
+            $ref: '#/components/schemas/token'
+      requestBody:
+        description: Обновленные данные предложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateOffer'
+        required: true
+      responses:
+        "201":
+          description: Предложение успешно обновлено. Обновленный объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+        "400":
+          description: Данные не прошли валидацию
+        "401":
+          description: Пользователь не авторизован
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+    get:
+      tags:
+        - offers
+      summary: Список предложений
+      description: Получить отсортированный список предложений по дате публикации
+      responses:
+        "200":
+          description: Список предложений
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offerItem'
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Информация по предложению
+      description: Получить детальную информацию по предложению
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "123nhjbhub123"
+      responses:
+        "200":
+          description: Детальная информация по предложению
+          content:
+            application/json:
+              schema:
+                $ref: '/components/schemas/offer'
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения
+      description: Удалить существующее предложение
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Предложение удалено
+        "401":
+          description: Пользователь не авторизован
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+components:
+  schemas:
+    ErrorModel:
+      type: object
+      required: [message, code]
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+          minimum: 400
+          maximum: 500
+          example: 500
+
+    basicUser:
+      type: object
+      required: [email, name, password, isPro]
+      properties:
+        email:
+          type: string
+          example: 'testaccount@test.com'
+        name:
+          type: string
+          minLength: 5
+          maxLength: 15
+          example: 'TestUser'
+        avatar:
+          type: string
+          example: 'img.png'
+        password:
+          type: string
+          minLength: 6
+          maxLength: 12
+          example: '12345678'
+        isPro:
+          type: boolean
+          example: true
+
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '123fgydb23615vyg12v31'
+          readOnly: true
+      allOf:
+        - $ref: '#/components/schemas/basicUser'
+
+    token:
+      type: string
+      example: 'eb76t6g3vb48gh8ec863h3u'
+
+    authorize:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          example: 'testaccount@test.com'
+        password:
+          type: string
+          example: '12345678'
+
+    avatar:
+      type: string
+      example: 'img.png'
+
+    city:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12hvgh32v4g3vgv'
+          readOnly: true
+        name:
+          type: string
+          enum:
+            - 'Paris'
+            - 'Amsterdam'
+            - 'Hamburg'
+            - 'Dusseldorf'
+            - 'Cologne'
+            - 'Brussels'
+          example: 'Paris'
+        latitude:
+          type: number
+          example: 2.1275617
+        longitude:
+          type: number
+          example: 12.2561436
+
+    basicComment:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 5
+          maxLength: 1024
+          example: 'Example comment'
+        rating:
+          type: number
+          minimum: 1.0
+          maximum: 5.0
+          example: 3.1
+
+    newComment:
+      type: object
+      properties:
+        author:
+          type: string
+          example: '12321hhvhh12311hj'
+      allOf:
+        - $ref: '#/components/schemas/basicComment'
+
+    comment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'wjcnwk234jbjrefk1b'
+          readOnly: true
+        date:
+          type: string
+          example: '24.06.2012'
+        author:
+          $ref: '#/components/schemas/user'
+      allOf:
+        - $ref: '#/components/schemas/basicComment'
+
+    houseType:
+      type: string
+      enum:
+        - 'apartment'
+        - 'house'
+        - 'hotel'
+        - 'room'
+      example: 'room'
+
+    goods:
+      type: array
+      items:
+        type: string
+        enum:
+          - 'Breakfast'
+          - 'Air conditioning'
+          - 'Laptop friendly workspace'
+          - 'Baby seat'
+          - 'Washer'
+          - 'Towels'
+          - 'Fridge'
+
+    basicOffer:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: 'Brand new offer'
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: 'Brand new offer description'
+        date:
+          type: string
+          example: '24-03-2023'
+        city:
+          type: string
+          example: 'Paris'
+        preview:
+          type: string
+          format: binary
+          example: '/img/img.jpg'
+        images:
+          type: array
+          maxItems: 6
+          minItems: 6
+          items:
+            type: string
+          example: ['/img/img.jpg',
+                    '/img/img1.jpg',
+                    '/img/img2.jpg',
+                    '/img/img3.jpg',
+                    '/img/img4.jpg',
+                    '/img/img5.jpg']
+        isPremium:
+          type: boolean
+          example: false
+        rating:
+          type: number
+          maximum: 5.0
+          minimum: 1.0
+          example: 3.2
+        type:
+          $ref: '#/components/schemas/houseType'
+        rooms:
+          type: number
+          minimum: 1
+          maximum: 8
+          example: 2
+        guests:
+          type: number
+          minimum: 1
+          maximum: 10
+          example: 2
+        price:
+          type: number
+          minimum: 100
+          maximum: 100000
+          example: 2500
+        goods:
+          $ref: '#/components/schemas/goods'
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 12.234343
+            longitude:
+              type: number
+              example: 3.213123
+
+    newOffer:
+      properties:
+        host:
+          type: string
+          example: '2783g2v423v4hg2v422873'
+          description: ID автора предложения
+      allOf:
+        - $ref: '#/components/schemas/basicOffer'
+
+    updateOffer:
+      properties:
+        id:
+          type: string
+          example: '12hvghh1bhb32v4g3vgv'
+          description: ID автора предложения
+        host:
+          type: string
+          example: '2783g2v423v4hg2v422873'
+          description: ID автора предложения
+      allOf:
+        - $ref: '#/components/schemas/basicOffer'
+
+    offer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12hvghh1bhb32v4g3vgv'
+          readOnly: true
+        comments:
+          type: number
+          example: 12
+        host:
+          $ref: '#/components/schemas/user'
+      allOf:
+        - $ref: '#/components/schemas/basicOffer'
+
+    offerItem:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 10
+          maxLength: 100
+          example: 'Brand new offer'
+        date:
+          type: string
+          example: '24-03-2023'
+        city:
+          type: string
+          example: 'Paris'
+        preview:
+          type: string
+          format: binary
+          example: '/img/img.jpg'
+        isPremium:
+          type: boolean
+          example: false
+        rating:
+          type: number
+          maximum: 5.0
+          minimum: 1.0
+          example: 3.2
+        type:
+          $ref: '#/components/schemas/houseType'
+        price:
+          type: number
+          minimum: 100
+          maximum: 100000
+          example: 2500
+        comments:
+          type: number
+          example: 12
+
+  securitySchemes:
+    auth:
+      type: apiKey
+      name: x-token
+      in: header
