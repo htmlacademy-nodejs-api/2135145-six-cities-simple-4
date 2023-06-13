@@ -1,7 +1,7 @@
 import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 import { AppComponent } from '../../types/app-component.enum.js';
-import { SortType } from "../../types/sort-type.type";
+import { SortType } from '../../types/sort-type.type.js';
 import { CommentServiceInterface } from './comment-service.interface.js';
 import { CommentEntity } from './comment.entity.js';
 import CreateCommentDto from './dto/create-comment.dto.js';
@@ -21,7 +21,7 @@ export default class CommentService implements CommentServiceInterface {
       .find({offerId})
       .limit(50)
       .populate('authorId')
-      .sort({date: SortType.Down})
+      .sort({date: SortType.Down});
   }
 
   public async deleteByOfferId(offerId:string): Promise<number | null> {
