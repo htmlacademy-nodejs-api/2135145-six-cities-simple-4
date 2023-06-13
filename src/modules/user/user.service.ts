@@ -36,4 +36,10 @@ export default class UserService implements UserServiceInterface {
 
     return this.create(dto, salt);
   }
+
+  public async updateAvatar(userId: string, avatar: string): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel
+      .findByIdAndUpdate(userId, {avatar}, {new: true})
+      .exec();
+  }
 }
