@@ -71,7 +71,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     ref: UserEntity,
     required: true,
   })
-  public host!: Ref<UserEntity>;
+  public hostId!: Ref<UserEntity>;
 
   public comments?: number;
   @prop({

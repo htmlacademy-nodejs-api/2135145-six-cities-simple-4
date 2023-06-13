@@ -293,7 +293,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
 
-    put:
+    patch:
       tags:
         - offers
       summary: Редактирование предложения
@@ -505,11 +505,14 @@ components:
           minimum: 1.0
           maximum: 5.0
           example: 3.1
+        offerId:
+          type: string
+          example: '12321hhvhh12311hj'
 
     newComment:
       type: object
       properties:
-        author:
+        authorId:
           type: string
           example: '12321hhvhh12311hj'
       allOf:
@@ -565,9 +568,6 @@ components:
           minLength: 20
           maxLength: 1024
           example: 'Brand new offer description'
-        date:
-          type: string
-          example: '24-03-2023'
         city:
           type: string
           example: 'Paris'
@@ -590,11 +590,6 @@ components:
         isPremium:
           type: boolean
           example: false
-        rating:
-          type: number
-          maximum: 5.0
-          minimum: 1.0
-          example: 3.2
         type:
           $ref: '#/components/schemas/houseType'
         rooms:
@@ -639,10 +634,6 @@ components:
           type: string
           example: '12hvghh1bhb32v4g3vgv'
           description: ID автора предложения
-        host:
-          type: string
-          example: '2783g2v423v4hg2v422873'
-          description: ID автора предложения
       allOf:
         - $ref: '#/components/schemas/basicOffer'
 
@@ -653,6 +644,14 @@ components:
           type: string
           example: '12hvghh1bhb32v4g3vgv'
           readOnly: true
+        date:
+          type: string
+          example: '24-03-2023'
+        rating:
+          type: number
+          maximum: 5.0
+          minimum: 1.0
+          example: 3.2
         comments:
           type: number
           example: 12
