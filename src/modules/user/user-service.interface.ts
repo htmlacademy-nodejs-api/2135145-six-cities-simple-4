@@ -6,5 +6,6 @@ export interface UserServiceInterface {
   create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   findByEmail(email: string): Promise<DocumentType<UserEntity> | null>;
   findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
-  updateAvatar(userId: string, avatar: string): Promise<DocumentType<UserEntity> | null>;
+
+  updateAvatar(userId: string, avatar: string | undefined): Promise<DocumentType<UserEntity> | null>;
 }

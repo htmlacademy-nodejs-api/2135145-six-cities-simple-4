@@ -29,7 +29,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/basicUser'
+              $ref: '#/components/schemas/createUser'
         required: true
       responses:
         "201":
@@ -293,45 +293,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
 
-    patch:
-      tags:
-        - offers
-      summary: Редактирование предложения
-      description: Обновить существующее предложение
-      security:
-        - auth: []
-      parameters:
-        - name: x-token
-          in: header
-          description: Токен пользователя
-          required: true
-          schema:
-            $ref: '#/components/schemas/token'
-      requestBody:
-        description: Обновленные данные предложения
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/updateOffer'
-        required: true
-      responses:
-        "201":
-          description: Предложение успешно обновлено. Обновленный объект предложения
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/offer'
-        "400":
-          description: Данные не прошли валидацию
-        "401":
-          description: Пользователь не авторизован
-        default:
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorModel'
-
     get:
       tags:
         - offers
@@ -371,6 +332,52 @@ paths:
             application/json:
               schema:
                 $ref: '/components/schemas/offer'
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
+    patch:
+      tags:
+        - offers
+      summary: Редактирование предложения
+      description: Обновить существующее предложение
+      security:
+        - auth: [ ]
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "123nhjbhub123"
+
+        - name: x-token
+          in: header
+          description: Токен пользователя
+          required: true
+          schema:
+            $ref: '#/components/schemas/token'
+      requestBody:
+        description: Обновленные данные предложения
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateOffer'
+        required: true
+      responses:
+        "201":
+          description: Предложение успешно обновлено. Обновленный объект предложения
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+        "400":
+          description: Данные не прошли валидацию
+        "401":
+          description: Пользователь не авторизован
         default:
           description: Ошибка сервера
           content:
@@ -430,14 +437,21 @@ components:
         avatar:
           type: string
           example: 'img.png'
+        isPro:
+          type: boolean
+          example: true
+
+    createUser:
+      type: object
+      properties:
         password:
           type: string
           minLength: 6
           maxLength: 12
           example: '12345678'
-        isPro:
-          type: boolean
-          example: true
+
+      allOf:
+        - $ref: '#/components/schemas/basicUser'
 
     user:
       type: object
