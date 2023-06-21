@@ -5,7 +5,8 @@
 /dist/
 /docs/
 .idea/*
-/mongodb
+/mongodb/
+/upload/
 
 .DS_Store
 coverage

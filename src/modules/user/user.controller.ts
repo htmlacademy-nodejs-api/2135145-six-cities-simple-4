@@ -7,6 +7,8 @@ import { Controller } from '../../core/controller/controller.abstract.js';
 import HttpError from '../../core/errors/http-error.js';
 import { fillDto } from '../../core/helpers/common.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
+import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
+import UploadFileMiddleware from '../../core/middlewares/upload-file.middleware.js';
 import ValidateDtoMiddleware from '../../core/middlewares/validate.dto.middleware.js';
 import ValidateObjectIdMiddleware from '../../core/middlewares/validate.objectid.middleware.js';
 import { AppComponent } from '../../types/app-component.enum.js';
@@ -41,7 +43,11 @@ export default class UserController extends Controller {
       path: '/:userId/avatar',
       method: HttpMethod.POST,
       handler: this.updateAvatar,
-      middlewares: [new ValidateObjectIdMiddleware('userId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new DocumentExistsMiddleware(this.userService, 'User', 'userId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
+      ],
     });
   }
 
@@ -81,10 +87,10 @@ export default class UserController extends Controller {
     );
   }
 
-  public async updateAvatar(
-    { params, body }: Request<Record<string, string>, Record<string, unknown>, CreateUserDto>,
-    res: Response): Promise<void> {
-    const result = await this.userService.updateAvatar(params.userId, body.avatar);
-    this.ok(res, fillDto(UserRdo, result));
+
+  public async updateAvatar(req: Request, res: Response) {
+    this.created(res, {
+      filepath: req.file?.path
+    });
   }
 }
