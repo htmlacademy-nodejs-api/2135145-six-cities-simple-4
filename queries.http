@@ -1,0 +1,40 @@
+# Тестовые данные
+GET http://localhost:3123/api HTTP/1.1
+
+###
+
+# Категории
+## Получить список городов
+
+GET http://localhost:8085/cities HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Пользователи
+## Регистрация пользователя
+
+POST http://localhost:8085/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "test-user@test.net",
+  "avatar": "test.png",
+  "name": "TestName",
+  "password": "12345678",
+  "isPro": true
+}
+
+###
+
+## Авторизация пользователя
+
+POST http://localhost:8085/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "test-user@test.net",
+  "password": "12345678"
+}
+
+###

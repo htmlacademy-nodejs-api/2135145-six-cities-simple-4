@@ -7,6 +7,7 @@ import { ExceptionFilterInterface } from '../core/exception-filters/exception-fi
 import { getMongoURI } from '../core/helpers/db.js';
 import { LoggerInterface } from '../core/logger/logger.interface.js';
 import CityController from '../modules/city/city.controller.js';
+import CommentController from '../modules/comment/comment.controller.js';
 import OfferController from '../modules/offer/offer.controller.js';
 import UserController from '../modules/user/user.controller.js';
 import { AppComponent } from '../types/app-component.enum.js';
@@ -21,6 +22,7 @@ export default class Application {
               @inject(AppComponent.CityController) private readonly cityController: CityController,
               @inject(AppComponent.UserController) private readonly userController: UserController,
               @inject(AppComponent.OfferController) private readonly offerController: OfferController,
+              @inject(AppComponent.CommentController) private readonly commentController: CommentController,
               @inject(AppComponent.ExceptionFilterInterface) private readonly exceptionFilter: ExceptionFilterInterface) {
     this.expressApplication = express();
   }
@@ -53,6 +55,7 @@ export default class Application {
     this.expressApplication.use('/cities', this.cityController.router);
     this.expressApplication.use('/users', this.userController.router);
     this.expressApplication.use('/offers', this.offerController.router);
+    this.expressApplication.use('/comments', this.commentController.router);
     this.logger.info('Controllers initialization completed');
   }
 
