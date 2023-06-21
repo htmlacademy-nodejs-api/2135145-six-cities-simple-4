@@ -175,37 +175,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
 
-  /comments/{offerId}:
-    get:
-      tags:
-        - comments
-      summary: Получить список комментариев для предложения
-      description: Список последних 50 (или менее) комментариев пользователей к предложению
-      parameters:
-        - name: offerId
-          in: path
-          required: true
-          description: ID предожения, к которому необходимо получить комментарии
-          schema:
-            type: string
-            example: "hjb112546513dc"
-      responses:
-        "200":
-          description: Список комментариев
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/comment'
-        "400":
-          description: Невалидный offerId
-        default:
-          description: Ошибка сервера
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorModel'
     post:
       tags:
         - comments
@@ -407,6 +376,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorModel'
+
+  /offers/{offerId}/comments:
+    get:
+      tags:
+        - comments
+      summary: Получить список комментариев для предложения
+      description: Список последних 50 (или менее) комментариев пользователей к предложению
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: ID предожения, к которому необходимо получить комментарии
+          schema:
+            type: string
+            example: "hjb112546513dc"
+      responses:
+        "200":
+          description: Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+        "400":
+          description: Невалидный offerId
+        default:
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+
 
 components:
   schemas:
