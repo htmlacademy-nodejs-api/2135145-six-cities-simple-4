@@ -5,11 +5,13 @@ import { Controller } from '../../core/controller/controller.abstract.js';
 import { fillDto } from '../../core/helpers/common.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
+import { PrivateRouteMiddleware } from '../../core/middlewares/private.route.middleware.js';
 import ValidateDtoMiddleware from '../../core/middlewares/validate.dto.middleware.js';
-import ValidateObjectIdMiddleware from '../../core/middlewares/validate.objectid.middleware.js';
+import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate.objectid.middleware.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import { RequestQuery } from '../../types/request-query.js';
+import { UnknownRecord } from '../../types/unknown-record.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import CommentRdo from '../comment/rdo/comment.rdo.js';
 import CreateOfferDto from './dto/create-offer.dto.js';
@@ -30,11 +32,15 @@ export default class OfferController extends Controller {
     super(logger);
 
     this.logger.info('Register routes for OfferController...');
+
     this.addRoute({
       path: '/',
       method: HttpMethod.POST,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)],
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateOfferDto),
+      ],
     });
     this.addRoute({path: '/', method: HttpMethod.GET, handler: this.index});
     this.addRoute({
@@ -50,6 +56,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.PATCH,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')],
@@ -59,6 +66,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.DELETE,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')],
     });
@@ -73,15 +81,15 @@ export default class OfferController extends Controller {
   }
 
   public async create(
-    { body }: Request<object, object, CreateOfferDto>,
+    { body, user }: Request<UnknownRecord, UnknownRecord, CreateOfferDto>,
     res: Response): Promise<void> {
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({...body, hostId: user.id});
     const offer = await this.offerService.findById(result.id);
     this.created(res, fillDto(OfferRdo, offer));
   }
 
   public async index(
-    {query}: Request<object, object, unknown, RequestQuery>,
+    {query}: Request<UnknownRecord, UnknownRecord, UnknownRecord, RequestQuery>,
     res: Response
   ) {
     const result = await this.offerService.find(query.limit);

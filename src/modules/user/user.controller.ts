@@ -5,18 +5,21 @@ import { ConfigInterface } from '../../core/config/config.interface.js';
 import { RestSchema } from '../../core/config/rest.schema.js';
 import { Controller } from '../../core/controller/controller.abstract.js';
 import HttpError from '../../core/errors/http-error.js';
-import { fillDto } from '../../core/helpers/common.js';
+import { createJWT, fillDto } from '../../core/helpers/common.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
 import UploadFileMiddleware from '../../core/middlewares/upload-file.middleware.js';
 import ValidateDtoMiddleware from '../../core/middlewares/validate.dto.middleware.js';
-import ValidateObjectIdMiddleware from '../../core/middlewares/validate.objectid.middleware.js';
+import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate.objectid.middleware.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
+import { UnknownRecord } from '../../types/unknown-record.js';
 import CreateUserDto from './dto/create-user.dto.js';
 import UserLoginDto from './dto/login-user.dto.js';
+import LoggedUserRdo from './rdo/logged-user.rdo.js';
 import UserRdo from './rdo/user.rdo.js';
 import { UserServiceInterface } from './user-service.interface.js';
+import { JWT_ALGORITHM } from './user.const.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -40,6 +43,11 @@ export default class UserController extends Controller {
       middlewares: [new ValidateDtoMiddleware(UserLoginDto)]
     });
     this.addRoute({
+      path: '/login',
+      method: HttpMethod.GET,
+      handler: this.checkAuthenticate,
+    });
+    this.addRoute({
       path: '/:userId/avatar',
       method: HttpMethod.POST,
       handler: this.updateAvatar,
@@ -52,7 +60,7 @@ export default class UserController extends Controller {
   }
 
   public async create(
-    { body }: Request<object, object, CreateUserDto>,
+    { body }: Request<UnknownRecord, UnknownRecord, CreateUserDto>,
     res: Response): Promise<void> {
     const existsUser = await this.userService.findByEmail(body.email);
 
@@ -68,11 +76,12 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    { body }: Request<object, object, CreateUserDto>,
-    _res: Response): Promise<void> {
-    const existsUser = await this.userService.findByEmail(body.email);
+    { body }: Request<UnknownRecord, UnknownRecord, CreateUserDto>,
+    res: Response): Promise<void> {
+    const user = await this.userService
+      .verifyUser(body, this.configService.get('SALT'));
 
-    if(!existsUser) {
+    if(!user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         `User with email ${body.email} not found.`,
@@ -80,17 +89,35 @@ export default class UserController extends Controller {
       );
     }
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Not implemented',
-      'UserController',
+    const token = await createJWT(
+      JWT_ALGORITHM,
+      this.configService.get('JWT_SECRET'),
+      {
+        email: user.email,
+        id: user.id,
+      }
     );
-  }
 
+    this.ok(res, fillDto(LoggedUserRdo, {
+      token
+    }));
+  }
 
   public async updateAvatar(req: Request, res: Response) {
     this.created(res, {
       filepath: req.file?.path
     });
+  }
+
+  public async checkAuthenticate({user}: Request, res: Response) {
+    const userData = await this.userService.findByEmail(user.email);
+    if(!userData) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+    this.ok(res, fillDto(LoggedUserRdo, userData));
   }
 }

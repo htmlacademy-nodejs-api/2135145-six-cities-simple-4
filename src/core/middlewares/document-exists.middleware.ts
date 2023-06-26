@@ -11,7 +11,7 @@ export class DocumentExistsMiddleware implements MiddlewareInterface {
     private readonly paramName: string,
   ) {}
 
-  public async execute({params}: Request, _res: Response, next: NextFunction): Promise<void> {
+  public execute = async({params}: Request, _res: Response, next: NextFunction): Promise<void> => {
     const documentId = params[this.paramName];
 
     if(!await this.service.exists(documentId)) {
@@ -23,5 +23,5 @@ export class DocumentExistsMiddleware implements MiddlewareInterface {
     }
 
     next();
-  }
+  };
 }

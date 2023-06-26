@@ -1,4 +1,4 @@
-import { IsMongoId, IsNumber, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsDateString, IsMongoId, IsNumber, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export default class CreateCommentDto {
   @IsString({message: 'text is required'})
@@ -14,6 +14,8 @@ export default class CreateCommentDto {
   @IsMongoId({message: 'offerId field must be a valid id'})
   public offerId!: string;
 
-  @IsMongoId({message: 'authorId field must be a valid id'})
+  @IsDateString({}, {message: 'date is required'})
+  public date!: Date;
+
   public authorId!: string;
 }
