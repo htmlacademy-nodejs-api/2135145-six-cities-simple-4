@@ -2,10 +2,14 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
-  IsBoolean,
-  IsEnum, IsInt, IsMongoId, IsObject,
-  IsString, Max,
-  MaxLength, Min,
+  IsBoolean, IsDateString,
+  IsEnum,
+  IsInt,
+  IsObject,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
   MinLength
 } from 'class-validator';
 import { City } from '../../../types/city.type.js';
@@ -21,6 +25,9 @@ export default class CreateOfferDto {
   @MinLength(20, {message: 'Minimum description length is 20'})
   @MaxLength(1024, {message: 'Maximum description length is 1024'})
   public description!: string;
+
+  @IsDateString({}, {message: 'date is required'})
+  public date!: Date;
 
   @IsEnum(City, {message: 'Must be one of Cities type'})
   public city!: City;
@@ -59,7 +66,6 @@ export default class CreateOfferDto {
   @IsEnum(HouseType, {each: true, message: 'Must be one of HouseType'})
   public goods!: Good[];
 
-  @IsMongoId({message: 'hostId field must be a valid id'})
   public hostId!: string;
 
   @IsObject({message: 'must be a Location object'})

@@ -5,9 +5,11 @@ import { Controller } from '../../core/controller/controller.abstract.js';
 import HttpError from '../../core/errors/http-error.js';
 import { fillDto } from '../../core/helpers/common.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
+import { PrivateRouteMiddleware } from '../../core/middlewares/private.route.middleware.js';
 import ValidateDtoMiddleware from '../../core/middlewares/validate.dto.middleware.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
+import { UnknownRecord } from '../../types/unknown-record.js';
 import { OfferServiceInterface } from '../offer/offer-service.interface.js';
 import { CommentServiceInterface } from './comment-service.interface.js';
 import CreateCommentDto from './dto/create-comment.dto.js';
@@ -25,13 +27,15 @@ export default class CommentController extends Controller {
       path: '/',
       method: HttpMethod.POST,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateCommentDto)],
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateCommentDto)
+      ],
     });
-
   }
 
   public async create(
-    {body}: Request<object, object, CreateCommentDto>,
+    {body, user}: Request<UnknownRecord, UnknownRecord, CreateCommentDto>,
     res: Response): Promise<void> {
 
     if (!await this.offerService.exists(body.offerId)) {
@@ -41,7 +45,8 @@ export default class CommentController extends Controller {
         'CommentController'
       );
     }
-    const result = this.commentService.create(body);
+    const result = await this.commentService.create({...body, authorId: user.id});
+    console.log(result);
     await this.offerService.incCommentCount(body.offerId);
     this.created(res, fillDto(CommentRdo, result));
   }

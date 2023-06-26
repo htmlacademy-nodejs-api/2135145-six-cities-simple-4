@@ -1,5 +1,7 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import * as crypto from 'node:crypto';
+import * as jose from 'jose';
+import { AuthPayload } from '../../types/auth-payload.type.js';
 
 export const createSHA256 = (line: string, salt: string) => {
   const shaHasher = crypto.createHmac('sha256', salt);
@@ -14,4 +16,12 @@ export function createErrorObject(message: string) {
   return {
     error: message,
   };
+}
+
+export async function createJWT(algorithm: string, jwtSecret: string, payload: AuthPayload): Promise<string> {
+  return new jose.SignJWT({ ...payload })
+    .setProtectedHeader({alg: algorithm})
+    .setIssuedAt()
+    .setExpirationTime('2d')
+    .sign(crypto.createSecretKey(jwtSecret, 'utf-8'));
 }

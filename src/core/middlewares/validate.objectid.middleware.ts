@@ -6,20 +6,20 @@ import HttpError from '../errors/http-error.js';
 
 const {Types} = mongoose;
 
-export default class ValidateObjectIdMiddleware implements MiddlewareInterface {
-  constructor(private readonly param: string) {}
+export class ValidateObjectIdMiddleware implements MiddlewareInterface {
+  constructor(private param: string) {}
 
-  public execute({params}: Request, _res: Response, next: NextFunction) {
+  public execute = ({ params }: Request, _res: Response, next: NextFunction): void => {
     const objectId = params[this.param];
 
-    if(Types?.ObjectId.isValid(objectId)) {
+    if (Types.ObjectId.isValid(objectId)) {
       return next();
     }
 
     throw new HttpError(
       StatusCodes.BAD_REQUEST,
-      `Invalid ObjectId: ${objectId}`,
+      `${objectId} is invalid ObjectID`,
       'ValidateObjectIdMiddleware'
     );
-  }
+  };
 }

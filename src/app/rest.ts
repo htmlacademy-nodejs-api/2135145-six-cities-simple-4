@@ -6,6 +6,7 @@ import { DatabaseClientInterface } from '../core/database-client/database-client
 import { ExceptionFilterInterface } from '../core/exception-filters/exception-filter.interface.js';
 import { getMongoURI } from '../core/helpers/db.js';
 import { LoggerInterface } from '../core/logger/logger.interface.js';
+import { AuthenticateMiddleware } from '../core/middlewares/authenticate.middleware.js';
 import CityController from '../modules/city/city.controller.js';
 import CommentController from '../modules/comment/comment.controller.js';
 import OfferController from '../modules/offer/offer.controller.js';
@@ -65,6 +66,9 @@ export default class Application {
     this.expressApplication.use(
       '/upload', express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
+    const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
+    this.expressApplication.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+
     this.logger.info('Global middleware initialization completed');
   }
 
