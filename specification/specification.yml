@@ -436,9 +436,6 @@ components:
           minLength: 5
           maxLength: 15
           example: 'TestUser'
-        avatar:
-          type: string
-          example: 'img.png'
         isPro:
           type: boolean
           example: true
@@ -462,6 +459,10 @@ components:
           type: string
           example: '123fgydb23615vyg12v31'
           readOnly: true
+        avatar:
+          type: string
+          example: 'img.png'
+
       allOf:
         - $ref: '#/components/schemas/basicUser'
 

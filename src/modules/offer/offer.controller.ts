@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import * as core from 'express-serve-static-core';
 import { inject, injectable } from 'inversify';
+import { ConfigInterface } from '../../core/config/config.interface.js';
+import { RestSchema } from '../../core/config/rest.schema.js';
 import { Controller } from '../../core/controller/controller.abstract.js';
 import { fillDto } from '../../core/helpers/common.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
+import { CheckAuthorityMiddleware } from '../../core/middlewares/check-authority.middleware.js';
 import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
 import { PrivateRouteMiddleware } from '../../core/middlewares/private.route.middleware.js';
 import ValidateDtoMiddleware from '../../core/middlewares/validate.dto.middleware.js';
@@ -28,8 +31,9 @@ type ParamsGetOffer = {
 export default class OfferController extends Controller {
   constructor(@inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
               @inject(AppComponent.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
-              @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface) {
-    super(logger);
+              @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
+              @inject(AppComponent.ConfigInterface) protected readonly configService: ConfigInterface<RestSchema>){
+    super(logger, configService);
 
     this.logger.info('Register routes for OfferController...');
 
@@ -59,7 +63,9 @@ export default class OfferController extends Controller {
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')],
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new CheckAuthorityMiddleware(this.offerService, 'offerId'),
+      ],
     });
     this.addRoute({
       path: '/:offerId',
@@ -68,7 +74,9 @@ export default class OfferController extends Controller {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')],
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new CheckAuthorityMiddleware(this.offerService, 'offerId'),
+      ],
     });
     this.addRoute({
       path: '/:offerId/comments',

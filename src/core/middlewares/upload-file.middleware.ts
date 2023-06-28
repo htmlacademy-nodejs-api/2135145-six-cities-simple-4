@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import mime from 'mime';
+import { extension } from 'mime-types';
 import multer, { diskStorage } from 'multer';
 import { nanoid } from 'nanoid';
 import { MiddlewareInterface } from '../../types/middleware.interface.js';
@@ -10,17 +10,19 @@ export default class UploadFileMiddleware implements MiddlewareInterface {
     private readonly fieldName: string,
   ) {}
 
-  public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public execute = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const storage = diskStorage({
       destination: this.uploadDirectory,
-      filename(_req: Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
-        const extension = mime.extension(file.mimetype);
+      filename: (_req, file, callback) => {
+        const fileExtentions = extension(file.mimetype);
         const filename = nanoid();
-        callback(null, `${filename}.${extension}`);
-      }});
+        callback(null, `${ filename }.${ fileExtentions }`);
+      }
+    });
 
-    const uploadSingleFileMiddleware = multer({storage}).single(this.fieldName);
+    const uploadSingleFileMiddleware = multer({ storage })
+      .single(this.fieldName);
 
     uploadSingleFileMiddleware(req, res, next);
-  }
+  };
 }

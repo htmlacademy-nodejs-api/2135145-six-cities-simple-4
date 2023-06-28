@@ -17,6 +17,7 @@ import { UnknownRecord } from '../../types/unknown-record.js';
 import CreateUserDto from './dto/create-user.dto.js';
 import UserLoginDto from './dto/login-user.dto.js';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
+import UploadUserAvatarRdo from './rdo/upload-user-avatar.rdo.js';
 import UserRdo from './rdo/user.rdo.js';
 import { UserServiceInterface } from './user-service.interface.js';
 import { JWT_ALGORITHM } from './user.const.js';
@@ -26,8 +27,8 @@ export default class UserController extends Controller {
 
   constructor(@inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
               @inject(AppComponent.UserServiceInterface) private readonly userService: UserServiceInterface,
-              @inject (AppComponent.ConfigInterface) private readonly configService: ConfigInterface<RestSchema>) {
-    super(logger);
+              @inject(AppComponent.ConfigInterface) protected readonly configService: ConfigInterface<RestSchema>){
+    super(logger, configService);
 
     this.logger.info('Register routes for UserController...');
     this.addRoute({
@@ -98,26 +99,30 @@ export default class UserController extends Controller {
       }
     );
 
-    this.ok(res, fillDto(LoggedUserRdo, {
+    this.ok(res, {
+      ...fillDto(LoggedUserRdo, user),
       token
-    }));
-  }
-
-  public async updateAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
     });
   }
 
-  public async checkAuthenticate({user}: Request, res: Response) {
-    const userData = await this.userService.findByEmail(user.email);
-    if(!userData) {
+  public async updateAvatar(req: Request, res: Response) {
+    const {userId} = req.params;
+    const uploadFile = {avatar: req.file?.filename};
+    await this.userService.updateById(userId, uploadFile);
+
+    this.created(res, fillDto(UploadUserAvatarRdo, uploadFile));
+  }
+
+  public async checkAuthenticate(req: Request, res: Response) {
+    if (!req.user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Unauthorized',
         'UserController'
       );
     }
+    const { user: { email } } = req;
+    const userData = await this.userService.findByEmail(email);
     this.ok(res, fillDto(LoggedUserRdo, userData));
   }
 }

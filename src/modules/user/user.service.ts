@@ -4,7 +4,9 @@ import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import CreateUserDto from './dto/create-user.dto.js';
 import UserLoginDto from './dto/login-user.dto.js';
+import UpdateUserDto from './dto/update-user.dto.js';
 import { UserServiceInterface } from './user-service.interface.js';
+import { DEFAULT_AVATAR_FILE_NAME } from './user.const.js';
 import { UserEntity } from './user.entity.js';
 
 @injectable()
@@ -16,7 +18,7 @@ export default class UserService implements UserServiceInterface {
   }
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity(dto);
+    const user = new UserEntity({...dto, avatar: DEFAULT_AVATAR_FILE_NAME});
     user.setPassword(dto.password, salt);
     const result = await this.userModel.create(user);
 
@@ -55,5 +57,11 @@ export default class UserService implements UserServiceInterface {
     }
 
     return null;
+  }
+
+  public async updateById(userId: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel
+      .findByIdAndUpdate(userId, dto, {new: true})
+      .exec();
   }
 }
