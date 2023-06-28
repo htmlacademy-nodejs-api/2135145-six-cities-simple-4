@@ -1,22 +1,19 @@
-import { IsBoolean, IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import { MAX_NAME_LENGTH, MAX_PASSWORD_LENGTH, MIN_NAME_LENGTH, MIN_PASSWORD_LENGTH } from '../user.const.js';
 
 export default class CreateUserDto {
 
   @IsString({message: 'Name is required'})
-  @MinLength(1, {message: 'Min length of name is 1'})
-  @MaxLength(15, {message: 'Max length of name is 15'})
+  @MinLength(MIN_NAME_LENGTH, {message: `Min length of name is ${MIN_NAME_LENGTH}`})
+  @MaxLength(MAX_NAME_LENGTH, {message: `Max length of name is ${MAX_NAME_LENGTH}`})
   public name!: string;
 
   @IsEmail({}, {message: 'Email must be valid address'})
   public email!: string;
 
-  @IsOptional()
-  @IsString({message: 'Avatar must be a link to an image'})
-  public avatar?: string;
-
   @IsString({message: 'Password is required'})
-  @MinLength(6, {message: 'Min length of password is 6'})
-  @MaxLength(12, {message: 'Max length of password is 12'})
+  @MinLength(MIN_PASSWORD_LENGTH, {message: `Min length of password is ${MIN_PASSWORD_LENGTH}`})
+  @MaxLength(MAX_PASSWORD_LENGTH, {message: `Max length of password is ${MAX_PASSWORD_LENGTH}`})
   public password!: string;
 
   @IsBoolean({message: 'isPro is required'})

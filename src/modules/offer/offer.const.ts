@@ -1,1 +1,11 @@
 export const DEFAULT_OFFERS_LIMIT = 60;
+export const MIN_OFFER_TITLE_LENGTH = 10;
+export const MAX_OFFER_TITLE_LENGTH = 100;
+export const MIN_OFFER_DESCRIPTION_LENGTH = 20;
+export const MAX_OFFER_DESCRIPTION_LENGTH = 1024;
+export const MIN_ROOMS_COUNT = 1;
+export const MAX_ROOMS_COUNT = 8;
+export const MIN_GUESTS_COUNT = 1;
+export const MAX_GUESTS_COUNT = 10;
+export const MIN_OFFER_PRICE = 100;
+export const MAX_OFFER_PRICE = 100000;

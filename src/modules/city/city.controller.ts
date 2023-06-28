@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
+import { ConfigInterface } from '../../core/config/config.interface.js';
+import { RestSchema } from '../../core/config/rest.schema.js';
 import { Controller } from '../../core/controller/controller.abstract.js';
 import { fillDto } from '../../core/helpers/common.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
@@ -11,8 +13,9 @@ import CityRdo from './rdo/city.rdo.js';
 @injectable()
 export default class CityController extends Controller {
   constructor(@inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
-              @inject(AppComponent.CityServiceInterface) private readonly cityService: CityServiceInterface) {
-    super(logger);
+              @inject(AppComponent.CityServiceInterface) private readonly cityService: CityServiceInterface,
+              @inject(AppComponent.ConfigInterface) protected readonly configService: ConfigInterface<RestSchema>){
+    super(logger, configService);
 
     this.logger.info('Register routes for CityController...');
     this.addRoute({path: '/', method: HttpMethod.GET, handler: this.index});

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
+import { ConfigInterface } from '../../core/config/config.interface.js';
+import { RestSchema } from '../../core/config/rest.schema.js';
 import { Controller } from '../../core/controller/controller.abstract.js';
 import HttpError from '../../core/errors/http-error.js';
 import { fillDto } from '../../core/helpers/common.js';
@@ -19,8 +21,9 @@ import CommentRdo from './rdo/comment.rdo.js';
 export default class CommentController extends Controller {
   constructor(@inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
               @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
-              @inject(AppComponent.OfferServiceInterface) private readonly offerService: OfferServiceInterface){
-    super(logger);
+              @inject(AppComponent.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
+              @inject(AppComponent.ConfigInterface) protected readonly configService: ConfigInterface<RestSchema>){
+    super(logger, configService);
 
     this.logger.info('Register routes for CommentController…');
     this.addRoute({
@@ -46,7 +49,6 @@ export default class CommentController extends Controller {
       );
     }
     const result = await this.commentService.create({...body, authorId: user.id});
-    console.log(result);
     await this.offerService.incCommentCount(body.offerId);
     this.created(res, fillDto(CommentRdo, result));
   }
