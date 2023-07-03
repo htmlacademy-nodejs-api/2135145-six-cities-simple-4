@@ -53,6 +53,10 @@
       "img/roland.jpg",
       "img/smite.jpg",
       "img/coffee.jpg"
+    ],
+    "userTypes": [
+      "обычный",
+      "pro"
     ]
   }
 }

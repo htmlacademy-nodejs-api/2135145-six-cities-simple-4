@@ -1,6 +1,8 @@
 import { defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
 import { createSHA256 } from '../../core/helpers/common.js';
+import { UserType } from '../../types/user-type.enum.js';
 import { User } from '../../types/user.type.js';
+import { NameLength } from './user.const.js';
 
 export interface UserEntity extends defaultClasses.Base {}
 
@@ -10,7 +12,7 @@ export interface UserEntity extends defaultClasses.Base {}
   }
 })
 export class UserEntity extends defaultClasses.TimeStamps implements User {
-  @prop({required: true, minlength: 1, maxlength: 15})
+  @prop({required: true, minlength: NameLength.MIN, maxlength: NameLength.MAX})
   public name!: string;
 
   @prop({unique: true, required: true})
@@ -22,15 +24,19 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({required: true})
   public password!: string;
 
-  @prop({required: true})
-  public isPro!: boolean;
+  @prop({
+    required: true,
+    enum: UserType,
+    type: () => String,
+  })
+  public type!: UserType;
 
   constructor(userData: User) {
     super();
     this.name = userData.name;
     this.email = userData.email;
     this.avatar = userData.avatar ?? '';
-    this.isPro = userData.isPro;
+    this.type = userData.type;
   }
 
   public setPassword(password: string, salt: string) {

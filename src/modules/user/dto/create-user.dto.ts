@@ -1,21 +1,22 @@
-import { IsBoolean, IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
-import { MAX_NAME_LENGTH, MAX_PASSWORD_LENGTH, MIN_NAME_LENGTH, MIN_PASSWORD_LENGTH } from '../user.const.js';
+import { IsEmail, IsEnum, IsString, MaxLength, MinLength } from 'class-validator';
+import { UserType } from '../../../types/user-type.enum.js';
+import { NameLength, PasswordLength } from '../user.const.js';
 
 export default class CreateUserDto {
 
   @IsString({message: 'Name is required'})
-  @MinLength(MIN_NAME_LENGTH, {message: `Min length of name is ${MIN_NAME_LENGTH}`})
-  @MaxLength(MAX_NAME_LENGTH, {message: `Max length of name is ${MAX_NAME_LENGTH}`})
+  @MinLength(NameLength.MIN, {message: `Min length of name is ${NameLength.MIN}`})
+  @MaxLength(NameLength.MAX, {message: `Max length of name is ${NameLength.MAX}`})
   public name!: string;
 
   @IsEmail({}, {message: 'Email must be valid address'})
   public email!: string;
 
   @IsString({message: 'Password is required'})
-  @MinLength(MIN_PASSWORD_LENGTH, {message: `Min length of password is ${MIN_PASSWORD_LENGTH}`})
-  @MaxLength(MAX_PASSWORD_LENGTH, {message: `Max length of password is ${MAX_PASSWORD_LENGTH}`})
+  @MinLength(PasswordLength.MIN, {message: `Min length of password is ${PasswordLength.MIN}`})
+  @MaxLength(PasswordLength.MAX, {message: `Max length of password is ${PasswordLength.MAX}`})
   public password!: string;
 
-  @IsBoolean({message: 'isPro is required'})
-  public isPro!: boolean;
+  @IsEnum(UserType, {message: 'Must be one of Goods'})
+  public type!: UserType;
 }

@@ -14,7 +14,8 @@ GET http://localhost:8085/offers HTTP/1.1
 
 POST http://localhost:8085/offers HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlckB0ZXN0Lm5ldCIsImlkIjoiNjQ5YzA4N2Y1MjVkODc4Nzc4ZTk4YTQ3IiwiaWF0IjoxNjg3OTQ3Mzk2LCJleHAiOjE2ODgxMjAxOTZ9.YyUAquxgN-ggYJ9-Aks8DhIc8m4GeMzldXc9MuBW_gA
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlcjNAdGVzdC5uZXQiLCJpZCI6IjY0YTMwNWJhNmY1OTU1MjQ2YTViNjU5YSIsImlhdCI6MTY4ODQwNTQ1MSwiZXhwIjoxNjg4NTc4MjUxfQ.VA08tioZFZ6RNyDggJmG4lVqsE52t7Nlw_LlE3NGLSM
+
 
 {
   "title": "Amazing and Extremely Central Flat",
@@ -46,17 +47,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlckB0ZXN0Lm5ld
 
 ## Удалить объявление по идентификатору
 
-DELETE http://localhost:8085/offers/649c0af302c6b5455115186f HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlckB0ZXN0Lm5ldCIsImlkIjoiNjQ5YzA4N2Y1MjVkODc4Nzc4ZTk4YTQ3IiwiaWF0IjoxNjg3OTQ3Mzk2LCJleHAiOjE2ODgxMjAxOTZ9.YyUAquxgN-ggYJ9-Aks8DhIc8m4GeMzldXc9MuBW_gA
+DELETE http://localhost:8085/offers/64a306426f5955246a5b65a4 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlcjNAdGVzdC5uZXQiLCJpZCI6IjY0YTMwNWJhNmY1OTU1MjQ2YTViNjU5YSIsImlhdCI6MTY4ODQwNTQ1MSwiZXhwIjoxNjg4NTc4MjUxfQ.VA08tioZFZ6RNyDggJmG4lVqsE52t7Nlw_LlE3NGLSM
 
 
 ###
 
 ## Обновить объявление
 
-PATCH http://localhost:8085/offers/649c0e8dadd2176b5d15728b HTTP/1.1
+PATCH http://localhost:8085/offers/64a306426f5955246a5b65a4 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlcjFAdGVzdC5uZXQiLCJpZCI6IjY0OWMwZWIwYWRkMjE3NmI1ZDE1NzI5OSIsImlhdCI6MTY4Nzk0ODk4NCwiZXhwIjoxNjg4MTIxNzg0fQ.boTOYseoKsd8J0PP4cz3MCWF-shzfj8E13icGWtwbxo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlcjNAdGVzdC5uZXQiLCJpZCI6IjY0YTMwNWJhNmY1OTU1MjQ2YTViNjU5YSIsImlhdCI6MTY4ODQwNTQ1MSwiZXhwIjoxNjg4NTc4MjUxfQ.VA08tioZFZ6RNyDggJmG4lVqsE52t7Nlw_LlE3NGLSM
 
 
 {

@@ -17,20 +17,20 @@ import { Good } from '../../../types/good.type.js';
 import { HouseType } from '../../../types/house-type.type.js';
 import { Location } from '../../../types/location.type.js';
 import {
-  MAX_GUESTS_COUNT,
-  MAX_OFFER_DESCRIPTION_LENGTH, MAX_OFFER_PRICE,
-  MAX_OFFER_TITLE_LENGTH, MAX_ROOMS_COUNT, MIN_GUESTS_COUNT,
-  MIN_OFFER_DESCRIPTION_LENGTH, MIN_OFFER_PRICE,
-  MIN_OFFER_TITLE_LENGTH, MIN_ROOMS_COUNT
+  GuestsCount,
+  OfferDescriptionLength,
+  OfferPrice,
+  OfferTitleLength,
+  RoomsCount
 } from '../offer.const.js';
 
 export default class CreateOfferDto {
-  @MinLength(MIN_OFFER_TITLE_LENGTH, {message: `Minimum title length is ${MIN_OFFER_TITLE_LENGTH}`})
-  @MaxLength(MAX_OFFER_TITLE_LENGTH, {message: `Maximum title length is ${MAX_OFFER_TITLE_LENGTH}`})
+  @MinLength(OfferTitleLength.MIN, {message: `Minimum title length is ${OfferTitleLength.MIN}`})
+  @MaxLength(OfferTitleLength.MAX, {message: `Maximum title length is ${OfferTitleLength.MAX}`})
   public title!: string;
 
-  @MinLength(MIN_OFFER_DESCRIPTION_LENGTH, {message: `Minimum description length is ${MIN_OFFER_DESCRIPTION_LENGTH}`})
-  @MaxLength(MAX_OFFER_DESCRIPTION_LENGTH, {message: `Maximum description length is ${MAX_OFFER_DESCRIPTION_LENGTH}`})
+  @MinLength(OfferDescriptionLength.MIN, {message: `Minimum description length is ${OfferDescriptionLength.MIN}`})
+  @MaxLength(OfferDescriptionLength.MAX, {message: `Maximum description length is ${OfferDescriptionLength.MAX}`})
   public description!: string;
 
   @IsDateString({}, {message: 'date is required'})
@@ -55,18 +55,18 @@ export default class CreateOfferDto {
   public type!: HouseType;
 
   @IsInt({message: 'Rooms must be an integer'})
-  @Min(MIN_ROOMS_COUNT, {message: `Minimum rooms value is ${MIN_ROOMS_COUNT}`})
-  @Max(MAX_ROOMS_COUNT, {message: `Maximum rooms value is ${MAX_ROOMS_COUNT}`})
+  @Min(RoomsCount.MIN, {message: `Minimum rooms value is ${RoomsCount.MIN}`})
+  @Max(RoomsCount.MAX, {message: `Maximum rooms value is ${RoomsCount.MAX}`})
   public rooms!: number;
 
   @IsInt({message: 'Guests must be an integer'})
-  @Min(MIN_GUESTS_COUNT, {message: `Minimum guests value is ${MIN_GUESTS_COUNT}`})
-  @Max(MAX_GUESTS_COUNT, {message: `Maximum guests value is ${MAX_GUESTS_COUNT}`})
+  @Min(GuestsCount.MIN, {message: `Minimum guests value is ${GuestsCount.MIN}`})
+  @Max(GuestsCount.MAX, {message: `Maximum guests value is ${GuestsCount.MAX}`})
   public guests!: number;
 
   @IsInt({message: 'Price must be an integer'})
-  @Min(MIN_OFFER_PRICE, {message: `Minimum price value is ${MIN_OFFER_PRICE}`})
-  @Max(MAX_OFFER_PRICE, {message: `Maximum price value is ${MAX_OFFER_PRICE}`})
+  @Min(OfferPrice.MIN, {message: `Minimum price value is ${OfferPrice.MIN}`})
+  @Max(OfferPrice.MAX, {message: `Maximum price value is ${OfferPrice.MAX}`})
   public price!: number;
 
   @IsArray({message: 'Goods must be an array'})

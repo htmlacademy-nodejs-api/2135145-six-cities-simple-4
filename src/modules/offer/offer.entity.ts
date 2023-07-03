@@ -4,6 +4,7 @@ import { Good } from '../../types/good.type.js';
 import { HouseType } from '../../types/house-type.type.js';
 import { Location } from '../../types/location.type.js';
 import { UserEntity } from '../user/user.entity.js';
+import { GuestsCount, OfferDescriptionLength, OfferPrice, OfferTitleLength, RoomsCount } from './offer.const.js';
 
 export interface OfferEntity extends defaultClasses.Base {}
 
@@ -13,10 +14,10 @@ export interface OfferEntity extends defaultClasses.Base {}
   }
 })
 export class OfferEntity extends defaultClasses.TimeStamps {
-  @prop({required: true, minlength: 10, maxlength: 100})
+  @prop({required: true, minlength: OfferTitleLength.MIN, maxlength: OfferTitleLength.MAX})
   public title!: string;
 
-  @prop({required: true, minlength: 20, maxlength: 1024})
+  @prop({required: true, minlength:OfferDescriptionLength.MIN, maxlength: OfferDescriptionLength.MAX})
   public description!: string;
 
   @prop({required: true})
@@ -50,13 +51,13 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   })
   public type!: HouseType;
 
-  @prop({ required: true, min: 1, max: 8 })
+  @prop({ required: true, min: RoomsCount.MIN, max: RoomsCount.MAX })
   public rooms!: number;
 
-  @prop({required: true, min: 1, max: 10})
+  @prop({required: true, min: GuestsCount.MIN, max: GuestsCount.MAX})
   public guests!: number;
 
-  @prop({required: true, min: 100, max: 100000})
+  @prop({required: true, min: OfferPrice.MIN, max: OfferPrice.MAX})
   public price!: number;
 
   @prop({

@@ -21,7 +21,7 @@ export function createOffer(offerData: string): Offer {
     email,
     avatar,
     password,
-    isPro,
+    userType,
     comments,
     latitude,
     longitude,
@@ -46,7 +46,7 @@ export function createOffer(offerData: string): Offer {
       email,
       avatar,
       password,
-      isPro: isPro === 'true',
+      type: userType,
     },
     comments: Number(comments),
     location: {
