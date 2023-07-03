@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import { createRestApplicationContainer } from './app/rest.container.js';
 import Application from './app/rest.js';
-import { createCityContainer } from './modules/city/city.container.js';
 import { createCommentContainer } from './modules/comment/comment.container.js';
 import { createOfferContainer } from './modules/offer/offer.container.js';
 import { createUserContainer } from './modules/user/user.container.js';
@@ -13,7 +12,6 @@ async function bootstrap() {
   const mainContainer = Container.merge(
     createRestApplicationContainer(),
     createUserContainer(),
-    createCityContainer(),
     createOfferContainer(),
     createCommentContainer());
 

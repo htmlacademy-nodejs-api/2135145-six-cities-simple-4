@@ -3,7 +3,6 @@ import { City } from '../../../types/city.type.js';
 import { Good } from '../../../types/good.type.js';
 import { HouseType } from '../../../types/house-type.type.js';
 import { Location } from '../../../types/location.type.js';
-import CityRdo from '../../city/rdo/city.rdo.js';
 import UserRdo from '../../user/rdo/user.rdo.js';
 
 export default class OfferRdo {
@@ -23,7 +22,6 @@ export default class OfferRdo {
   public rating!: number;
 
   @Expose()
-  @Type(() => CityRdo)
   public city!: City;
 
   @Expose()

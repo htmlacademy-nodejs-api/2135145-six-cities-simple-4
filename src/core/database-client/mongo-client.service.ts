@@ -17,7 +17,7 @@ export default class MongoClientService implements DatabaseClientInterface {
   constructor(@inject(AppComponent.LoggerInterface) private readonly logger: LoggerInterface) {
   }
 
-  private async _connectWithRetry(uri: string): Promise<Mongoose>{
+  private async connectWithRetry(uri: string): Promise<Mongoose>{
     let attempt = 0;
     while (attempt < RETRY_COUNT) {
       try {
@@ -33,12 +33,12 @@ export default class MongoClientService implements DatabaseClientInterface {
     throw new Error('Failed to connect to the database');
   }
 
-  private async _connect(uri: string): Promise<void> {
-    this.mongooseInstance = await this._connectWithRetry(uri);
+  private async doConnect(uri: string): Promise<void> {
+    this.mongooseInstance = await this.connectWithRetry(uri);
     this.isConnected = true;
   }
 
-  private async _disconnect(): Promise<void> {
+  private async doDisconnect(): Promise<void> {
     this.mongooseInstance?.disconnect();
     this.isConnected = false;
     this.mongooseInstance = null;
@@ -50,7 +50,7 @@ export default class MongoClientService implements DatabaseClientInterface {
     }
 
     this.logger.info('Trying to connect to MongoDB...');
-    await this._connect(uri);
+    await this.doConnect(uri);
     this.logger.info('Database connection established');
   }
 
@@ -58,7 +58,7 @@ export default class MongoClientService implements DatabaseClientInterface {
     if(!this.isConnected) {
       throw new Error('Not connected to database');
     }
-    await this._disconnect();
+    await this.doDisconnect();
     this.logger.info('Database connection is closed');
   }
 }

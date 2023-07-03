@@ -13,16 +13,16 @@ import { ControllerInterface } from './controller.interface.js';
 
 @injectable()
 export abstract class Controller implements ControllerInterface {
-  private readonly _router: Router;
+  private readonly routerInstance: Router;
 
   constructor(
     protected readonly logger: LoggerInterface,
     protected readonly configService: ConfigInterface<RestSchema>) {
-    this._router = Router();
+    this.routerInstance = Router();
   }
 
   get router() {
-    return this._router;
+    return this.routerInstance;
   }
 
   public addRoute(route: RouteInterface) {
@@ -32,7 +32,7 @@ export abstract class Controller implements ControllerInterface {
     );
 
     const allHandlers = middlewares ? [...middlewares, routeHandler] : routeHandler;
-    this._router[route.method](route.path, allHandlers);
+    this.routerInstance[route.method](route.path, allHandlers);
     this.logger.info(`Route registered: ${route.method.toUpperCase()} ${route.path}`);
   }
 

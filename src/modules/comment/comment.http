@@ -3,12 +3,12 @@
 
 POST http://localhost:8085/comments HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlckB0ZXN0Lm5ldCIsImlkIjoiNjQ5MDhjNDIxZTZlNzdmNzRmYWZjZWU3IiwiaWF0IjoxNjg3NzA1MzYzLCJleHAiOjE2ODc4NzgxNjN9.zCMKW4y8qDMEOirKHnRgCY7S_9b09OD6Uv7rr9TPfcg
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3QtdXNlcjNAdGVzdC5uZXQiLCJpZCI6IjY0YTMwNWJhNmY1OTU1MjQ2YTViNjU5YSIsImlhdCI6MTY4ODQwNTQ1MSwiZXhwIjoxNjg4NTc4MjUxfQ.VA08tioZFZ6RNyDggJmG4lVqsE52t7Nlw_LlE3NGLSM
 
 {
   "text": "Manifique!",
   "date": "2023-05-30T05:01:26.239Z",
-  "offerId": "649917982168ae4e56c21f0d",
+  "offerId": "64a306726f5955246a5b65b7",
   "rating": 4.0
 }
 

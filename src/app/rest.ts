@@ -9,7 +9,6 @@ import { getFullServerPath } from '../core/helpers/common.js';
 import { getMongoURI } from '../core/helpers/db.js';
 import { LoggerInterface } from '../core/logger/logger.interface.js';
 import { AuthenticateMiddleware } from '../core/middlewares/authenticate.middleware.js';
-import CityController from '../modules/city/city.controller.js';
 import CommentController from '../modules/comment/comment.controller.js';
 import OfferController from '../modules/offer/offer.controller.js';
 import UserController from '../modules/user/user.controller.js';
@@ -22,7 +21,6 @@ export default class Application {
   constructor(@inject(AppComponent.LoggerInterface) private readonly logger: LoggerInterface,
               @inject(AppComponent.ConfigInterface) private readonly config: ConfigInterface<RestSchema>,
               @inject(AppComponent.DatabaseClientInterface) private readonly databaseClient: DatabaseClientInterface,
-              @inject(AppComponent.CityController) private readonly cityController: CityController,
               @inject(AppComponent.UserController) private readonly userController: UserController,
               @inject(AppComponent.OfferController) private readonly offerController: OfferController,
               @inject(AppComponent.CommentController) private readonly commentController: CommentController,
@@ -32,7 +30,7 @@ export default class Application {
     this.expressApplication = express();
   }
 
-  private async _initDb() {
+  private async initDb() {
     this.logger.info('Init database...');
 
     const mongoUri = getMongoURI(
@@ -47,7 +45,7 @@ export default class Application {
     this.logger.info('Init database completed');
   }
 
-  private async _initServer() {
+  private async initServer() {
     this.logger.info('Init server...');
 
     const port = this.config.get('PORT');
@@ -55,16 +53,15 @@ export default class Application {
     this.logger.info(`🚀Server started on ${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}`);
   }
 
-  private async _initRoutes() {
+  private async initRoutes() {
     this.logger.info('Controllers initialization...');
-    this.expressApplication.use('/cities', this.cityController.router);
     this.expressApplication.use('/users', this.userController.router);
     this.expressApplication.use('/offers', this.offerController.router);
     this.expressApplication.use('/comments', this.commentController.router);
     this.logger.info('Controllers initialization completed');
   }
 
-  private async _initMiddleware() {
+  private async initMiddleware() {
     this.logger.info('Global middleware initialization...');
     this.expressApplication.use(express.json());
     this.expressApplication.use(
@@ -77,21 +74,20 @@ export default class Application {
     this.logger.info('Global middleware initialization completed');
   }
 
-  private async _initExceptionFilters() {
+  private async initExceptionFilters() {
     this.logger.info('Exception filters initialization...');
     this.expressApplication.use(this.validationExceptionFilter.catch.bind(this.validationExceptionFilter));
     this.expressApplication.use(this.httpErrorExceptionFilter.catch.bind(this.httpErrorExceptionFilter));
     this.expressApplication.use(this.baseExceptionFilter.catch.bind(this.baseExceptionFilter));
     this.logger.info('Exception filters initialized');
-
   }
 
   public async init() {
     this.logger.info('Application initialization...');
-    await this._initDb();
-    await this._initMiddleware();
-    await this._initRoutes();
-    await this._initExceptionFilters();
-    await this._initServer();
+    await this.initDb();
+    await this.initMiddleware();
+    await this.initRoutes();
+    await this.initExceptionFilters();
+    await this.initServer();
   }
 }

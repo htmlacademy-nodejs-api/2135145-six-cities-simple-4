@@ -9,7 +9,7 @@ Content-Type: application/json
   "avatar": "test.png",
   "name": "TestName",
   "password": "12345678",
-  "isPro": true
+  "type": "pro"
 }
 
 ###
@@ -20,7 +20,7 @@ POST http://localhost:8085/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "test-user1@test.net",
+  "email": "test-user3@test.net",
   "password": "12345678"
 }
 
